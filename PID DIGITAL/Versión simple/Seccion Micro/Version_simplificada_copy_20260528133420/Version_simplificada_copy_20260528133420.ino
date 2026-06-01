@@ -15,7 +15,7 @@ double HISTERESIS = 2.0;  // Ancho de banda para el control On/Off
 int BTRELE = 100;         // Base de tiempo del relé en ms
 float temperaturaActual = 0.0;
 unsigned long tiempoUltimoControl = 0;
-
+int porcentajeActuador=0.0;
 // ==================== OBJETOS GLOBALES ====================
 SensorDeTemperatura SensorDht11(PIN_DHT11);
 Rele ReleSsr(PIN_RELE, BTRELE, "SSR");
@@ -36,7 +36,7 @@ void setup() {
     // Nota: Tu clase Rele acota internamente valores menores a 1 como 1%
 
     tiempoUltimoControl = millis();
-    Serial.println("Sistema de Control Inicializado.");
+    //Serial.println("Sistema de Control Inicializado.");
 }
 
 // ==================== LOOP PRINCIPAL ====================
@@ -63,7 +63,7 @@ void loop() {
             // Calcular la acción de control correspondiente (Internamente evalúa si es PID o ON_OFF)
             double accionControl = sistemaControl.CalcularError(setpoint, temperaturaActual);
             // Mapear y acotar la salida al rango que acepta el Actuador [1, 100]
-            int porcentajeActuador = (int)accionControl;
+            porcentajeActuador = (int)accionControl;
             if (porcentajeActuador < 1)   porcentajeActuador = 1;
             if (porcentajeActuador > 100) porcentajeActuador = 100;
             // Aplicar el control al Relé
@@ -71,7 +71,7 @@ void loop() {
             // Enviar los datos del sistema
             enviarTelemetria();
         } else {
-            Serial.println("[ERROR] No se pudo calcular el control debido a una falla en el sensor.");
+            delay(2);//Serial.println("[ERROR] No se pudo calcular el control debido a una falla en el sensor.");
         }
     }
     
@@ -85,11 +85,12 @@ void procesarComando(String cmd) {
         float val = cmd.substring(9).toFloat();
         if (val >= -50 && val <= 300) {
             setpoint = val;
-            Serial.print("[OK] Setpoint cambiado a: ");
-            Serial.print(setpoint, 2);
-            Serial.println(" °C");
+            //Serial.print("[OK] Setpoint cambiado a: ");
+            //Serial.print(setpoint, 2);
+            //Serial.println(" °C");
         } else { 
-            Serial.println("[ERROR] Setpoint fuera de rango (-50..300)");
+            
+            delay(2);//Serial.println("[ERROR] Setpoint fuera de rango (-50..300)");
         }
     }
     else if (cmd.startsWith("kp:")) {
@@ -98,10 +99,10 @@ void procesarComando(String cmd) {
             KP = val;
             // Reiniciamos el objeto de control para aplicar los nuevos coeficientes
             sistemaControl = Control(KP, KI, KD, TS, HISTERESIS, sistemaControl.GetBanderaPID(), sistemaControl.GetBanderaOnOff());
-            Serial.print("[OK] Kp cambiado a: ");
-            Serial.println(KP, 2);
+            //Serial.print("[OK] Kp cambiado a: ");
+            //Serial.println(KP, 2);
         } else { 
-            Serial.println("[ERROR] Kp fuera de rango (0..255)");
+            //Serial.println("[ERROR] Kp fuera de rango (0..255)");
         }
     }
     else if (cmd.startsWith("ki:")) {
@@ -109,10 +110,10 @@ void procesarComando(String cmd) {
         if (val >= 0 && val <= 100) {
             KI = val;
             sistemaControl = Control(KP, KI, KD, TS, HISTERESIS, sistemaControl.GetBanderaPID(), sistemaControl.GetBanderaOnOff());
-            Serial.print("[OK] Ki cambiado a: ");
-            Serial.println(KI, 2);
+            //Serial.print("[OK] Ki cambiado a: ");
+            //Serial.println(KI, 2);
         } else { 
-            Serial.println("[ERROR] Ki fuera de rango (0..100)"); 
+            //Serial.println("[ERROR] Ki fuera de rango (0..100)"); 
         }
     }
     else if (cmd.startsWith("kd:")) {
@@ -120,10 +121,10 @@ void procesarComando(String cmd) {
         if (val >= 0 && val <= 100) {
             KD = val;
             sistemaControl = Control(KP, KI, KD, TS, HISTERESIS, sistemaControl.GetBanderaPID(), sistemaControl.GetBanderaOnOff());
-            Serial.print("[OK] Kd cambiado a: ");
-            Serial.println(KD, 2);
+            //Serial.print("[OK] Kd cambiado a: ");
+            //Serial.println(KD, 2);
         } else { 
-            Serial.println("[ERROR] Kd fuera de rango (0..100)"); 
+            //Serial.println("[ERROR] Kd fuera de rango (0..100)"); 
         }
     }
     else if (cmd.startsWith("ts:")) {
@@ -131,25 +132,25 @@ void procesarComando(String cmd) {
         if (val >= 1.0 && val <= 10.0) {
             TS = val;
             sistemaControl = Control(KP, KI, KD, TS, HISTERESIS, sistemaControl.GetBanderaPID(), sistemaControl.GetBanderaOnOff());
-            Serial.print("[OK] Tiempo de muestreo (Ts) cambiado a ");
+            //Serial.print("[OK] Tiempo de muestreo (Ts) cambiado a ");
             Serial.print(TS, 1);
-            Serial.println(" segundos");
+            //Serial.println(" segundos");
         } else { 
-            Serial.println("[ERROR] Ts debe estar entre 1 y 10 segundos");
+         //   /Serial.println("[ERROR] Ts debe estar entre 1 y 10 segundos");
         }
     }
     else if (cmd.startsWith("onoff:on")) {
         sistemaControl.SetBanderaPID(false);
         sistemaControl.SetBanderaOnOff(true);
-        Serial.println("[MODO] Tipo de control cambiado a ON-OFF");
+        //Serial.println("[MODO] Tipo de control cambiado a ON-OFF");
     }
     else if (cmd.startsWith("onoff:off")) {
         sistemaControl.SetBanderaPID(true);
         sistemaControl.SetBanderaOnOff(false);
-        Serial.println("[MODO] Tipo de control cambiado a PID");
+      //  Serial.println("[MODO] Tipo de control cambiado a PID");
     }
     else {
-        Serial.println("Comandos validos: setpoint:XX, kp:X, ki:X, kd:X, ts:1..10, onoff:on, onoff:off");
+      delay(2);//  Serial.println("Comandos validos: setpoint:XX, kp:X, ki:X, kd:X, ts:1..10, onoff:on, onoff:off");
     }
 }
 
@@ -162,29 +163,25 @@ void enviarTelemetria() {
         tipoControl = "ON_OFF";
     }
 
-    Serial.println("\n--- TELEMETRIA ---");
-    
-    Serial.print("Setpoint     : ");
-    Serial.print(setpoint, 2);
-    Serial.println(" °C");
-
-    Serial.print("Temp. Actual : ");
-    Serial.print(temperaturaActual, 2);
-    Serial.println(" °C");
-
-    Serial.print("Modo Control : ");
-    Serial.println(tipoControl);
+    // Construir objeto JSON
+    String json = "{";
+    json += "\"setpoint\":" + String(setpoint, 2) + ",";
+    json += "\"temperatura_actual\":" + String(temperaturaActual, 2) + ",";
+    json += "\"salida_porcentaje\":" + String((int)porcentajeActuador) + ",";
+    json += "\"modo_control\":\"" + tipoControl + "\"";
 
     if (tipoControl == "PID") {
-        Serial.print("Parametros   : Kp=");
-        Serial.print(KP, 2);
-        Serial.print(", Ki=");
-        Serial.print(KI, 2);
-        Serial.print(", Kd=");
-        Serial.print(KD, 2);
-        Serial.print(", Ts=");
-        Serial.print(TS, 1);
-        Serial.println(" s");
+        json += ",\"parametros_pid\":{";
+        json += "\"kp\":" + String(KP, 2) + ",";
+        json += "\"ki\":" + String(KI, 2) + ",";
+        json += "\"kd\":" + String(KD, 2) + ",";
+        json += "\"ts\":" + String(TS, 1);
+        json += "}";
     }
-    Serial.println("------------------");
+
+    json += "}";
+
+    // Enviar JSON por Serial
+    Serial.println(json);
+    delay(10);  // Pequeña pausa opcional para asegurar transmisión
 }

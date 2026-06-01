@@ -25,7 +25,7 @@ class SensorDeTemperatura {
       
       // Comprobamos si ha habido algún error en la lectura
       if (isnan(t)) {
-        Serial.println("Error obteniendo los datos del sensor DHT11"); 
+        //Serial.println("Error obteniendo los datos del sensor DHT11"); 
         return -999.0; // Devolvemos un valor de error controlable
       }
       
