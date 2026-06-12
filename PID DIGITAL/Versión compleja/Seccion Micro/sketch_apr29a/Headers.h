@@ -2,7 +2,7 @@
 
 #ifndef HEADERS_H
 #define HEADERS_H
-
+#include <Arduino.h>
 // Incluir todos los archivos .h
 #include "Actuador.h"
 #include "Comunicaciones.h"

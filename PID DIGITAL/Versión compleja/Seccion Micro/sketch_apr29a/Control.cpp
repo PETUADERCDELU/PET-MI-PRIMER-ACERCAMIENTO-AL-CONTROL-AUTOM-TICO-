@@ -1,5 +1,5 @@
 #include "Control.h"
-
+#include <Arduino.h>
 // ========== Implementación PIDDiscreto ==========
 PIDDiscreto::PIDDiscreto(double kp, double ki, double kd, double ts)
     : Kp(kp), Ki(ki), Kd(kd), Ts(ts), integral_acum(0.0), error_anterior(0.0)

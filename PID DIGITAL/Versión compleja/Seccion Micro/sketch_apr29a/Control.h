@@ -2,7 +2,7 @@
 #define CONTROL_H
 
 #include <iostream>   // para std::cerr (solo para el mensaje de error)
-
+#include <Arduino.h>
 // --------------------------------------------------------------
 // Clase PID discreto (forma posicional)
 // --------------------------------------------------------------

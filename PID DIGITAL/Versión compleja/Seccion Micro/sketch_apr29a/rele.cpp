@@ -1,5 +1,5 @@
 #include "rele.h"
-
+#include <Arduino.h>
 // Constructor
 Rele::Rele(int pin, int BaseDeTiempo, String Tipo)
   : actuador(BaseDeTiempo, Tipo) {

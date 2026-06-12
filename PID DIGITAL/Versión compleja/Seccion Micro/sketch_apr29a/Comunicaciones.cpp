@@ -1,105 +1,77 @@
 #include "Comunicaciones.h"
 
-// Intento de incluir el archivo opcional Contrasenha.h
+#include <WiFiManager.h>          // Librería WiFiManager
+
+// Intento de incluir archivo opcional de credenciales
 #if __has_include("Contrasenha.h")
   #include "Contrasenha.h"
   #define TIENE_CONTRASENHA 1
 #else
   #define TIENE_CONTRASENHA 0
-  #define RED nullptr
-  #define contrasenha nullptr
 #endif
 
 Comunicaciones::Comunicaciones() {
     _wsConectado = false;
     _mensajeCallback = nullptr;
-    _ssid = nullptr;
-    _password = nullptr;
 }
 
-void Comunicaciones::configurar(const char* ssid, const char* password,
-                                const char* wsHost, uint16_t wsPort, const char* wsPath) {
-    _ssid = ssid;
-    _password = password;
+void Comunicaciones::begin(const char* wsHost, uint16_t wsPort, const char* wsPath, int timeoutSegundos) {
     _wsHost = wsHost;
     _wsPort = wsPort;
     _wsPath = wsPath;
+
+    // 1. Conectar WiFi usando WiFiManager con prioridad a Contrasenha.h
+    _conectarWiFiConWM(timeoutSegundos);
+
+    // 2. Inicializar WebSocket seguro (WSS)
+    _webSocket.beginSSL(_wsHost, _wsPort, _wsPath);
+    _webSocket.onEvent([this](WStype_t type, uint8_t* payload, size_t length) {
+        this->_webSocketEvent(type, payload, length);
+    });
+    _webSocket.setReconnectInterval(5000);
+    Serial.println("[Comunicaciones] WebSocket inicializado (SSL)");
 }
 
-void Comunicaciones::ConexionAutomatica(const char* wsHost, uint16_t wsPort, const char* wsPath) {
-    _wsHost = wsHost;
-    _wsPort = wsPort;
-    _wsPath = wsPath;
-    
-    bool credencialesExternas = false;
-    
+void Comunicaciones::_conectarWiFiConWM(int timeoutSegundos) {
+    WiFi.mode(WIFI_STA);
+    bool wifiOk = false;
+
+    // Prioridad: si existe Contrasenha.h, intentar con esas credenciales primero
 #if TIENE_CONTRASENHA
-    if (RED != nullptr && contrasenha != nullptr) {
-        Serial.println("[Auto] Usando credenciales desde Contrasenha.h");
-        _ssid = RED;
-        _password = contrasenha;
-        credencialesExternas = true;
+    Serial.println("[WiFi] Intentando con credenciales de Contrasenha.h");
+    WiFi.begin(RED, contrasenha);
+    int intentos = 0;
+    while (WiFi.status() != WL_CONNECTED && intentos < 20) { // 10 segundos máximo
+        delay(500);
+        Serial.print(".");
+        intentos++;
+    }
+    if (WiFi.status() == WL_CONNECTED) {
+        wifiOk = true;
+        Serial.println("\n[WiFi] Conectado con credenciales predefinidas");
+    } else {
+        Serial.println("\n[WiFi] Falló conexión con credenciales predefinidas");
     }
 #endif
-    
-    if (!credencialesExternas) {
-        Serial.println("[Auto] No se encontró Contrasenha.h o sus macros son inválidas. Modo manual.");
-        IngresarRedWifiManualmente();
-        _ssid = _manualSSID.c_str();
-        _password = _manualPassword.c_str();
-    }
-    
-    _conectarWiFi();
-    
-    if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("[Auto] Falló la conexión con las credenciales actuales.");
-        Serial.println("Solicitando nuevas credenciales manualmente...");
-        IngresarRedWifiManualmente();
-        _ssid = _manualSSID.c_str();
-        _password = _manualPassword.c_str();
-        _conectarWiFi();
-    }
-    
-    // --- CAMBIO A WSS: Se usa beginSSL en lugar de begin ---
-    _webSocket.beginSSL(_wsHost, _wsPort, _wsPath);
-    _webSocket.onEvent([this](WStype_t type, uint8_t* payload, size_t length) {
-        this->_webSocketEvent(type, payload, length);
-    });
-    _webSocket.setReconnectInterval(5000);
-}
 
-void Comunicaciones::IngresarRedWifiManualmente() {
-    Serial.println("\n=== Modo de ingreso manual de WiFi ===");
-    Serial.println("Ingrese el nombre de la red (SSID):");
-    
-    _manualSSID = "";
-    while (_manualSSID.length() == 0) {
-        if (Serial.available()) {
-            _manualSSID = Serial.readStringUntil('\n');
-            _manualSSID.trim();
+    // Si no se pudo conectar, usar WiFiManager con portal cautivo
+    if (!wifiOk) {
+        Serial.println("[WiFi] Lanzando portal de configuración WiFiManager...");
+        WiFiManager wm;
+        wm.setConfigPortalTimeout(timeoutSegundos);
+        wm.setConnectTimeout(20); // segundos intentando conectar
+        // Nombre del AP y contraseña (puedes personalizarlos)
+        bool res = wm.autoConnect("ControlESP", "control123");
+        if (!res) {
+            Serial.println("[WiFi] Error crítico: no se pudo conectar. Reiniciando...");
+            delay(3000);
+            ESP.restart();
         }
-        delay(100);
+        Serial.println("[WiFi] Conectado mediante WiFiManager");
     }
-    
-    Serial.println("Ingrese la contraseña:");
-    _manualPassword = "";
-    while (_manualPassword.length() == 0) {
-        if (Serial.available()) {
-            _manualPassword = Serial.readStringUntil('\n');
-            _manualPassword.trim();
-        }
-        delay(100);
-    }
-}
 
-void Comunicaciones::conectar() {
-    _conectarWiFi();
-    // --- CAMBIO A WSS: Se usa beginSSL en lugar de begin ---
-    _webSocket.beginSSL(_wsHost, _wsPort, _wsPath);
-    _webSocket.onEvent([this](WStype_t type, uint8_t* payload, size_t length) {
-        this->_webSocketEvent(type, payload, length);
-    });
-    _webSocket.setReconnectInterval(5000);
+    Serial.print("[WiFi] IP: ");
+    Serial.println(WiFi.localIP());
 }
 
 void Comunicaciones::loop() {
@@ -119,38 +91,12 @@ void Comunicaciones::onMensajeRecibido(MensajeCallback callback) {
     _mensajeCallback = callback;
 }
 
-bool Comunicaciones::wifiConectado() {
-    return WiFi.status() == WL_CONNECTED;
-}
-
 bool Comunicaciones::webSocketConectado() {
     return _wsConectado;
 }
 
-void Comunicaciones::_conectarWiFi() {
-    if (_ssid == nullptr || _password == nullptr) {
-        Serial.println("[WiFi] Error: credenciales no configuradas");
-        return;
-    }
-    
-    Serial.print("[WiFi] Conectando a ");
-    Serial.println(_ssid);
-    WiFi.begin(_ssid, _password);
-    
-    int intentos = 0;
-    while (WiFi.status() != WL_CONNECTED && intentos < 20) {
-        delay(500);
-        Serial.print(".");
-        intentos++;
-    }
-    
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("\n[WiFi] Conectado!");
-        Serial.print("[WiFi] IP: ");
-        Serial.println(WiFi.localIP());
-    } else {
-        Serial.println("\n[WiFi] Falló la conexión");
-    }
+bool Comunicaciones::wifiConectado() {
+    return WiFi.status() == WL_CONNECTED;
 }
 
 void Comunicaciones::_webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {

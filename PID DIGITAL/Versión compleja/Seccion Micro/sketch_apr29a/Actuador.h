@@ -1,6 +1,5 @@
 #ifndef ACTUADOR_H
 #define ACTUADOR_H
-
 #include <Arduino.h>
 
 class actuador {

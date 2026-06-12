@@ -1,9 +1,9 @@
 #ifndef TRANSISTOR_H
 #define TRANSISTOR_H
 
-#include <Arduino.h>
-#include "actuador.h"
 
+#include "actuador.h"
+#include <Arduino.h>
 class Transistor : public actuador {
   private:
     int _pin;                // Pin de salida conectado a la base/puerta del transistor

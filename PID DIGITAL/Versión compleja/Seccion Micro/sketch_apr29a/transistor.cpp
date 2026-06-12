@@ -1,5 +1,5 @@
 #include "transistor.h"
-
+#include <Arduino.h>
 // Constructor: almacena el período y configura el pin
 Transistor::Transistor(int pin, int periodoMicros, String tipo)
   : actuador(periodoMicros, tipo), // la base de tiempo se guarda en la clase base (como int)
