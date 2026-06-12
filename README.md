@@ -4,7 +4,7 @@
 # Mi primer acercamiento al control automático
 
 ## Descripción del Proyecto
-Este proyecto surge en el marco de las Prácticas Educativas Territoriales (PET) de la **Facultad de Ciencia y Tecnología (FCyT) - UADER**, desarrollado por las cátedras de *Proyecto de Sistemas Digitales* y *Electrónica de Control* de la *Licenciatura en Automatización y Control de Procesos Industriales*.
+Este proyecto surge en el marco de las Prácticas Educativas Territoriales (PET) de la [**Facultad de Ciencia y Tecnología (FCyT) - UADER**](https://fcytcdelu.uader.edu.ar/contacto), desarrollado por las cátedras de *Proyecto de Sistemas Digitales* y *Electrónica de Control* de la *Licenciatura en Automatización y Control de Procesos Industriales*.
 
 El objetivo principal es resolver la falta de equipamiento práctico en escuelas técnicas mediante el diseño e implementación de **módulos didácticos de control automático de bajo costo y fácil replicabilidad**. Los módulos permiten experimentar con sistemas de lazo abierto y cerrado utilizando aproximaciones tanto analógicas como digitales.
 
