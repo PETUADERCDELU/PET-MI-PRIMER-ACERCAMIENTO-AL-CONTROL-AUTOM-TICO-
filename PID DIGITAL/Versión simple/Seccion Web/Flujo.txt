@@ -1,4 +1,3 @@
-*Acá va a estar el flujo para importarlo al node-red*
 [
     {
         "id": "be4c766e2e544b5d",
@@ -114,27 +113,6 @@
         ]
     },
     {
-        "id": "2312040b049c060d",
-        "type": "function",
-        "z": "be4c766e2e544b5d",
-        "name": "cmd:basetiemporele",
-        "func": "msg.payload = \"basetiemporele:\" + msg.payload;\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 610,
-        "y": 1060,
-        "wires": [
-            [
-                "ef0999ca6a3fb7bb",
-                "9ef062a7b4740b82"
-            ]
-        ]
-    },
-    {
         "id": "e8e569ad22eece7b",
         "type": "function",
         "z": "be4c766e2e544b5d",
@@ -193,7 +171,7 @@
         "order": 2,
         "width": 0,
         "height": 0,
-        "passthru": true,
+        "passthru": false,
         "outs": "all",
         "topic": "",
         "topicType": "str",
@@ -229,7 +207,7 @@
         "step": "0.01",
         "className": "",
         "x": 250,
-        "y": 720,
+        "y": 800,
         "wires": [
             [
                 "6c63010486ade505"
@@ -255,7 +233,7 @@
         "max": "10",
         "step": "0.5",
         "className": "",
-        "x": 50,
+        "x": 410,
         "y": 820,
         "wires": [
             [
@@ -291,42 +269,14 @@
         ]
     },
     {
-        "id": "e157e746a2009f5e",
-        "type": "ui_numeric",
-        "z": "be4c766e2e544b5d",
-        "name": "Base T Relé (ms)",
-        "label": "Base de tiempo del Relé (ms)",
-        "tooltip": "Periodo base del relé (10-10000 ms)",
-        "group": "b5253ba5469cbac5",
-        "order": 8,
-        "width": 0,
-        "height": 0,
-        "wrap": false,
-        "passthru": true,
-        "topic": "",
-        "topicType": "str",
-        "format": "{{value}}",
-        "min": "40",
-        "max": 10000,
-        "step": 10,
-        "className": "",
-        "x": 310,
-        "y": 1060,
-        "wires": [
-            [
-                "2312040b049c060d"
-            ]
-        ]
-    },
-    {
         "id": "7d50f65c45f332a0",
         "type": "ui_numeric",
         "z": "be4c766e2e544b5d",
         "name": "",
-        "label": "Kp",
+        "label": "Kp a enviar",
         "tooltip": "",
         "group": "2337440e676662b7",
-        "order": 3,
+        "order": 5,
         "width": 0,
         "height": 0,
         "wrap": false,
@@ -336,9 +286,9 @@
         "format": "{{value}}",
         "min": 0,
         "max": "50",
-        "step": "0.01",
+        "step": "0.1",
         "className": "",
-        "x": 390,
+        "x": 410,
         "y": 700,
         "wires": [
             [
@@ -351,10 +301,10 @@
         "type": "ui_numeric",
         "z": "be4c766e2e544b5d",
         "name": "",
-        "label": "Kd",
+        "label": "Kd a enviar",
         "tooltip": "",
         "group": "2337440e676662b7",
-        "order": 4,
+        "order": 9,
         "width": 0,
         "height": 0,
         "wrap": false,
@@ -366,7 +316,7 @@
         "max": "80",
         "step": "0.01",
         "className": "",
-        "x": 230,
+        "x": 190,
         "y": 860,
         "wires": [
             [
@@ -379,10 +329,10 @@
         "type": "ui_numeric",
         "z": "be4c766e2e544b5d",
         "name": "",
-        "label": "Ki",
+        "label": "Ki a enviar",
         "tooltip": "",
         "group": "2337440e676662b7",
-        "order": 5,
+        "order": 7,
         "width": 0,
         "height": 0,
         "wrap": false,
@@ -392,9 +342,9 @@
         "format": "{{value}}",
         "min": 0,
         "max": "20",
-        "step": "0.001",
+        "step": "0.01",
         "className": "",
-        "x": 250,
+        "x": 270,
         "y": 760,
         "wires": [
             [
@@ -407,10 +357,10 @@
         "type": "ui_numeric",
         "z": "be4c766e2e544b5d",
         "name": "",
-        "label": "SetPoint",
+        "label": "SetPoint a enviar",
         "tooltip": "",
         "group": "2337440e676662b7",
-        "order": 6,
+        "order": 10,
         "width": 0,
         "height": 0,
         "wrap": false,
@@ -422,7 +372,7 @@
         "max": "78",
         "step": "0.1",
         "className": "",
-        "x": 400,
+        "x": 430,
         "y": 600,
         "wires": [
             [
@@ -438,7 +388,7 @@
         "label": "Tiempo de muestreo (seg)",
         "tooltip": "",
         "group": "2337440e676662b7",
-        "order": 7,
+        "order": 11,
         "width": 0,
         "height": 0,
         "wrap": false,
@@ -538,9 +488,9 @@
         "nodata": "",
         "dot": false,
         "ymin": "0",
-        "ymax": "120",
+        "ymax": "50",
         "removeOlder": "10",
-        "removeOlderPoints": "50",
+        "removeOlderPoints": "30",
         "removeOlderUnit": "60",
         "cutout": 0,
         "useOneColor": false,
@@ -626,9 +576,9 @@
         "nodata": "",
         "dot": true,
         "ymin": "0",
-        "ymax": "100",
+        "ymax": "50",
         "removeOlder": "5",
-        "removeOlderPoints": "20",
+        "removeOlderPoints": "25",
         "removeOlderUnit": "60",
         "cutout": 0,
         "useOneColor": false,
@@ -703,7 +653,7 @@
         "z": "be4c766e2e544b5d",
         "name": "",
         "group": "4790fc4eabb03bf3",
-        "order": 5,
+        "order": 1,
         "width": 0,
         "height": 0,
         "label": "Temperatura",
@@ -714,9 +664,9 @@
         "nodata": "",
         "dot": true,
         "ymin": "0",
-        "ymax": "100",
+        "ymax": "75",
         "removeOlder": "15",
-        "removeOlderPoints": "25",
+        "removeOlderPoints": "40",
         "removeOlderUnit": "60",
         "cutout": 0,
         "useOneColor": false,
@@ -758,7 +708,7 @@
         "unit": "°C",
         "scale": "normal",
         "minTemp": 0,
-        "maxTemp": 100,
+        "maxTemp": "80",
         "minTempMoreThanMaxTemp": "1",
         "numberOfDecimals": "2",
         "showPercentage": "0",
@@ -783,19 +733,19 @@
         "z": "be4c766e2e544b5d",
         "name": "Tipo de Control",
         "group": "2337440e676662b7",
-        "order": 2,
+        "order": 3,
         "width": 0,
         "height": 1,
         "label": "Tipo de Control",
         "stateField": "payload",
-        "enableField": "enable",
-        "passthroughField": "passthrough",
-        "inputMsgField": "inputmsg",
+        "enableField": "payload",
+        "passthroughField": "payload",
+        "inputMsgField": "payload",
         "rounded": false,
         "useThemeColors": true,
         "hideSelectedLabel": false,
         "multilineLabel": false,
-        "passThrough": "never",
+        "passThrough": "change",
         "inputMsg": "all",
         "userInput": "enabled_show",
         "options": [
@@ -813,11 +763,12 @@
             }
         ],
         "topic": "",
-        "x": 80,
+        "x": 180,
         "y": 540,
         "wires": [
             [
-                "e8e569ad22eece7b"
+                "e8e569ad22eece7b",
+                "957abe93a37985f4"
             ]
         ]
     },
@@ -847,12 +798,13 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 340,
         "y": 280,
         "wires": [
             [
                 "31f7298d02203f72",
-                "0a47f8e4c4af54a8"
+                "0a47f8e4c4af54a8",
+                "9d78717f66256462"
             ],
             [
                 "3485bb1ddebfff8d",
@@ -871,13 +823,16 @@
                 "f3313dc04071a69b"
             ],
             [
-                "36533135390a3d43"
+                "36533135390a3d43",
+                "c7df177e5822fb71"
             ],
             [
-                "645558e00b8aa55f"
+                "645558e00b8aa55f",
+                "94dd27a328ca85b1"
             ],
             [
-                "dd07377ca5874287"
+                "dd07377ca5874287",
+                "d3baf409bc4a41bb"
             ],
             [
                 "75388bb943cf3c84"
@@ -974,7 +929,7 @@
         "z": "be4c766e2e544b5d",
         "name": "",
         "group": "4790fc4eabb03bf3",
-        "order": 5,
+        "order": 3,
         "width": 0,
         "height": 0,
         "label": "Salida",
@@ -1017,8 +972,8 @@
         "type": "ui_gauge",
         "z": "be4c766e2e544b5d",
         "name": "",
-        "group": "2337440e676662b7",
-        "order": 8,
+        "group": "417a12287c942f40",
+        "order": 2,
         "width": 0,
         "height": 0,
         "gtype": "compass",
@@ -1039,6 +994,131 @@
         "x": 610,
         "y": 460,
         "wires": []
+    },
+    {
+        "id": "c7df177e5822fb71",
+        "type": "ui_text",
+        "z": "be4c766e2e544b5d",
+        "group": "2337440e676662b7",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Kp actual:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 440,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "94dd27a328ca85b1",
+        "type": "ui_text",
+        "z": "be4c766e2e544b5d",
+        "group": "2337440e676662b7",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Ki actual:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 440,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "d3baf409bc4a41bb",
+        "type": "ui_text",
+        "z": "be4c766e2e544b5d",
+        "group": "2337440e676662b7",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Kd actual:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 440,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "9d78717f66256462",
+        "type": "ui_text",
+        "z": "be4c766e2e544b5d",
+        "group": "2337440e676662b7",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Setpoint actual:",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 780,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "024d5e4ac9444683",
+        "type": "ui_toast",
+        "z": "be4c766e2e544b5d",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 810,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "957abe93a37985f4",
+        "type": "function",
+        "z": "be4c766e2e544b5d",
+        "name": "Aviso",
+        "func": "let EsOnOff = msg.payload;\nif (EsOnOff==\"onoff:on\")\n{\nmsg.payload = \"El control On-off se ha activado, su histerisis es de 2 grados\";\nreturn msg}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 600,
+        "wires": [
+            [
+                "024d5e4ac9444683"
+            ]
+        ]
     },
     {
         "id": "35bd0707828eb206",
@@ -1119,7 +1199,7 @@
     {
         "id": "4790fc4eabb03bf3",
         "type": "ui_group",
-        "name": "Grafiquitos",
+        "name": "Gráficos",
         "tab": "2d54b16bc1fdd21c",
         "order": 2,
         "disp": true,
@@ -1144,6 +1224,17 @@
         "responsetimeout": 10000
     },
     {
+        "id": "417a12287c942f40",
+        "type": "ui_group",
+        "name": "grafico circular",
+        "tab": "2d54b16bc1fdd21c",
+        "order": 3,
+        "disp": false,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "b1621ce7ad4c9a13",
         "type": "ui_tab",
         "name": "Control",
@@ -1164,14 +1255,14 @@
     {
         "id": "582906419b7b7ace",
         "type": "ui_tab",
-        "name": "Solo graficas",
+        "name": "Solo gráficas",
         "icon": "dashboard",
         "order": 4,
         "disabled": false,
         "hidden": false
     },
     {
-        "id": "53327dae910fbdc5",
+        "id": "a8d6b3e66f32e921",
         "type": "global-config",
         "env": [],
         "modules": {

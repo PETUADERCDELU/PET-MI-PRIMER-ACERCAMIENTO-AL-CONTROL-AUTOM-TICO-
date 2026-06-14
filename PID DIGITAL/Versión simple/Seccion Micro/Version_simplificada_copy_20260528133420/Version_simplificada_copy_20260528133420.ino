@@ -163,6 +163,7 @@ void enviarTelemetria() {
         tipoControl = "PID";
     } else if (sistemaControl.GetBanderaOnOff()) {
         tipoControl = "ON_OFF";
+        
     }
 
     // Construir objeto JSON
@@ -180,7 +181,8 @@ void enviarTelemetria() {
         json += "\"ts\":" + String(TS, 1);
         json += "}";
     }
-
+    else {}
+    // json += "\"Banda de Histerisis\":" + String(HISTERESIS}, 2) + ",";} Se descartó
     json += "}";
 
     // Enviar JSON por Serial

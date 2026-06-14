@@ -20,9 +20,10 @@ void Rele::Aplicar(int porcentaje) {
   unsigned long tiempoOn = baseTiempo - tiempoOff;
 
   // Lógica de encendido/apagado dentro de la base de tiempo
- 
-  digitalWrite(_pin, HIGH);   // Enciende el relé
-  delay(tiempoOn);            // Permanece encendido
+
+  digitalWrite(_pin, HIGH);   // Enciende el relé}
+  delay(tiempoOn);  
+    if (porcentaje!=0){          // Permanece encendido
   digitalWrite(_pin, LOW);    // Apaga el relé
-  delay(tiempoOff);           // Permanece apagado el resto
+  delay(tiempoOff);        }   // Permanece apagado el resto}
 }
