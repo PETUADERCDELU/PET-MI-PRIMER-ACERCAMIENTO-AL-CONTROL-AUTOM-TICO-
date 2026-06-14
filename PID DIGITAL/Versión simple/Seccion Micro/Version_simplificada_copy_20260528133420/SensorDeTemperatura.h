@@ -17,6 +17,9 @@ class SensorDeTemperatura {
     // Inicializa el sensor
     void inicializar() {
       _dht.begin();
+      for(int contador=0;contador<6;contador++){
+      float lectura = leerTemperatura(); delay(75);} // las primeras lecturas las hace mal, por lo que hacemos estas 6 lecturas "bobas"
+
     }
 
     // Lee la temperatura y maneja los errores internamente
