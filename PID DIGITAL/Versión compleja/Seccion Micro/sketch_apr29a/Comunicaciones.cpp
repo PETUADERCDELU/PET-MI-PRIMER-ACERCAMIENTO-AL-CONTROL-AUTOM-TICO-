@@ -59,7 +59,7 @@ void Comunicaciones::_conectarWiFiConWM(int timeoutSegundos) {
         Serial.println("[WiFi] Lanzando portal de configuración WiFiManager...");
         WiFiManager wm;
         wm.setConfigPortalTimeout(timeoutSegundos);
-        wm.setConnectTimeout(20); // segundos intentando conectar
+        wm.setConnectTimeout(50); // segundos intentando conectar
         // Nombre del AP y contraseña (puedes personalizarlos)
         bool res = wm.autoConnect("ControlESP", "control123");
         if (!res) {

@@ -1,45 +1,26 @@
 #include "transistor.h"
-#include <Arduino.h>
-// Constructor: almacena el período y configura el pin
-Transistor::Transistor(int pin, int periodoMicros, String tipo)
-  : actuador(periodoMicros, tipo), // la base de tiempo se guarda en la clase base (como int)
-    _pin(pin),
-    _periodo((unsigned long)periodoMicros)
-{
-  pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, LOW);   // estado inicial: apagado
+
+Transistor::Transistor(int pin, int frecuencia, String tipo)
+    : actuador(0, tipo), _pin(pin), _frecuencia(frecuencia) {
+    ledcAttach(_pin, _frecuencia, 8); // resolución 8 bits (0-255)
+    ledcWrite(_pin, 0);
 }
 
-// Método que genera un pulso con ciclo de trabajo = porcentaje
 void Transistor::Aplicar(int porcentaje) {
-  // Validar porcentaje
-  if (porcentaje < 1) porcentaje = 1;
-  if (porcentaje > 100) porcentaje = 100;
+    porcentaje = constrain(porcentaje, 0, 100);
+    int duty = map(porcentaje, 0, 100, 0, 255);
+    ledcWrite(_pin, duty);
+}
 
-  unsigned long tiempoOn = (_periodo * porcentaje) / 100;
-  unsigned long tiempoOff = _periodo - tiempoOn;
-
-  // Encender transistor
-  digitalWrite(_pin, HIGH);
-  // Espera el tiempo de encendido (microsegundos o milisegundos según magnitud)
-  if (tiempoOn > 0) {
-    if (tiempoOn < 1000) {
-      delayMicroseconds(tiempoOn);
-    } else {
-      delay(tiempoOn / 1000);
-      delayMicroseconds(tiempoOn % 1000);
+void Transistor::setFrecuencia(int nuevaFrecuencia) {
+    if (nuevaFrecuencia > 0) {
+        _frecuencia = nuevaFrecuencia;
+        // Reconfigurar el canal PWM
+        ledcDetach(_pin);
+        ledcAttach(_pin, _frecuencia, 8);
+        // Mantener el duty según el último porcentaje aplicado (se pierde, pero se puede guardar)
+        // Para mantener el estado, necesitaríamos guardar el último duty.
+        // Por simplicidad, ponemos a 0 y el siguiente Aplicar() lo pondrá bien.
+        ledcWrite(_pin, 0);
     }
-  }
-
-  // Apagar transistor
-  digitalWrite(_pin, LOW);
-  // Espera el tiempo de apagado
-  if (tiempoOff > 0) {
-    if (tiempoOff < 1000) {
-      delayMicroseconds(tiempoOff);
-    } else {
-      delay(tiempoOff / 1000);
-      delayMicroseconds(tiempoOff % 1000);
-    }
-  }
 }
