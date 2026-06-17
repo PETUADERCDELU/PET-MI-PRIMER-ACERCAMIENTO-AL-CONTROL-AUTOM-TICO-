@@ -1,20 +1,19 @@
 #ifndef TRANSISTOR_H
 #define TRANSISTOR_H
 
-
 #include "actuador.h"
 #include <Arduino.h>
+
 class Transistor : public actuador {
-  private:
-    int _pin;                // Pin de salida conectado a la base/puerta del transistor
-    unsigned long _periodo;  // Período en microsegundos (inverso de la frecuencia)
+private:
+    int _pin;
+    int _frecuencia;
 
-  public:
-    // Constructor: recibe pin, período en microsegundos (BaseDeTiempo) y tipo descriptivo
-    Transistor(int pin, int periodoMicros, String tipo);
-
-    // Aplica un ciclo de trabajo (1-100) durante un período completo
+public:
+    Transistor(int pin, int frecuencia = 1000, String tipo = "transistor");
     void Aplicar(int porcentaje) override;
+    // Nuevo método para cambiar la frecuencia sin destruir el objeto
+    void setFrecuencia(int nuevaFrecuencia);
 };
 
-#endif // TRANSISTOR_H
+#endif

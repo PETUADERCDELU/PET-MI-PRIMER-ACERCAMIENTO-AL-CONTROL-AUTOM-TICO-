@@ -1,26 +1,39 @@
 #include "rele.h"
-#include <Arduino.h>
-// Constructor
-Rele::Rele(int pin, int BaseDeTiempo, String Tipo)
-  : actuador(BaseDeTiempo, Tipo) {
-  _pin = pin;
-  pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, LOW);   // Inicialmente apagado
+
+Rele::Rele(int pin, int periodoMs, String tipo)
+    : actuador(periodoMs, tipo), _pin(pin), _periodoMs(periodoMs),
+      _tiempoOn(0), _ultimoCambio(0), _estadoActual(false), _porcentajeActual(0) {
+    pinMode(_pin, OUTPUT);
+    digitalWrite(_pin, LOW);
 }
 
-// Método Aplicar
 void Rele::Aplicar(int porcentaje) {
-  // Validar porcentaje (1 a 100)
-  if (porcentaje < 1) porcentaje = 1;
-  if (porcentaje > 100) porcentaje = 100;
+    porcentaje = constrain(porcentaje, 0, 100);
+    _porcentajeActual = porcentaje;
+    _tiempoOn = (unsigned long)porcentaje * _periodoMs / 100;
+    _ultimoCambio = millis();
+    _estadoActual = false;
+    digitalWrite(_pin, LOW);
+}
 
-  int baseTiempo = getBaseDeTiempo();  // en milisegundos
-  unsigned long tiempoOn = (unsigned long)porcentaje * baseTiempo / 100;
-  unsigned long tiempoOff = baseTiempo - tiempoOn;
+void Rele::loop() {
+    unsigned long ahora = millis();
+    unsigned long tiempoEnCiclo = (ahora - _ultimoCambio) % _periodoMs;
+    bool deberiaEncender = (tiempoEnCiclo < _tiempoOn);
+    if (deberiaEncender != _estadoActual) {
+        _estadoActual = deberiaEncender;
+        digitalWrite(_pin, _estadoActual ? HIGH : LOW);
+    }
+}
 
-  // Lógica de encendido/apagado dentro de la base de tiempo
-  digitalWrite(_pin, HIGH);   // Enciende el relé
-  delay(tiempoOn);            // Permanece encendido
-  digitalWrite(_pin, LOW);    // Apaga el relé
-  delay(tiempoOff);           // Permanece apagado el resto
+void Rele::setPeriodo(int nuevoPeriodoMs) {
+    if (nuevoPeriodoMs > 0) {
+        _periodoMs = nuevoPeriodoMs;
+        // Recalcular _tiempoOn en función del porcentaje actual
+        _tiempoOn = (unsigned long)_porcentajeActual * _periodoMs / 100;
+        // Reiniciar el ciclo para que empiece desde el principio
+        _ultimoCambio = millis();
+        _estadoActual = false;
+        digitalWrite(_pin, LOW);
+    }
 }
