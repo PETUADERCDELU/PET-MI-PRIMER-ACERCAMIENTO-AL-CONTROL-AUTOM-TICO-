@@ -20,3 +20,31 @@ Todo el material de este repositorio (diseños de hardware, firmware y documenta
 * **Carácter Abierto:** Diseños de PCB y esquemáticos optimizados para manufactura local o prototipado rápido en laboratorios escolares.
 
 ---
+## Versiones de Implementación
+
+Para cubrir distintos niveles de complejidad, recursos disponibles en las escuelas y objetivos pedagógicos, el proyecto se desarrolla en tres variantes de módulo didáctico:
+
+### 1. PID Digital Extendido (ESP32 + WiFi)
+La version extendida es la mas compleja, se busca con ella encontrar el sistema mas completo y mas desarrolado de la idea original, su funcion es permitir a los alumnos trabajar de forma mas directa con el sistema pudiendo aprender de forma mas didactica.
+
+- **Características destacadas:** 
+  - 
+### 2. PID Digital Simplificado (Arduino)
+Esta es la versión simplificada, con ella buscamos poder mostrar el funcionamiento de una manera mas simple y económica, se busca una implementación demostrativa y simple de explicar.
+
+- **Características destacadas:**
+  - Arduino Uno: funciona como cerebro del proyecto toma los valores de sensor de temperatura y permite habilitar el paso de la corriente a las resistencias para poder regular la temperatura. 
+  - Tranformador: su implementacion es principalmente por seguridad, ya que su labor es principal es expositiva, es preferible trabajar con bajas tensiones.
+  - Sensor de temperatura: nos permite saber que temperatura tienen las resitencia en cada momento
+  - Bimetalico: en caso de un fallo esto detectara una temperatura inusualmente alta y desconectara el sistema de la red electrica para evitar un daño mayor.
+  - Rele de es estado solido: junto con el arduino permite el paso de la corriente a las resistencias.
+  - Resistencia: la funcion de estas es generar calor permitir a resto del sistema regular su temperatura
+
+### 3. Versión Analógica (Amplificadores Operacionales)
+Para abordar el control desde la perspectiva de la electrónica de señales continuas, esta versión prescinde por completo de microcontroladores. Se basa en circuitos con amplificadores operacionales (como el clásico LM324) configurados como integradores, diferenciadores y amplificadores sumadores.
+
+- **Características destacadas:**
+  - Implementación física de las acciones Proporcional, Integral y Derivativa mediante redes de resistencias y capacitores.
+  - Permite visualizar en un osciloscopio la señal de control y la realimentación en tiempo real, conectando directamente la teoría de Laplace con la práctica de laboratorio.
+  - Resulta ideal para explicar conceptos como el "windup" del integrador o el efecto del ruido en la derivada sin la abstracción del código digital.
+  - Totalmente independiente de baterías o fuentes externas complejas (se alimenta con fuente simétrica básica), garantizando su replicabilidad en talleres con recursos limitados.
