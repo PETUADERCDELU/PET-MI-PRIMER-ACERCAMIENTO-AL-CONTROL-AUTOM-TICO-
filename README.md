@@ -27,7 +27,7 @@ Para cubrir distintos niveles de complejidad, recursos disponibles en las escuel
 ### 1. PID Digital Extendido (ESP32 + WiFi)
 La version extendida es la mas compleja, se busca con ella encontrar el sistema mas completo y mas desarrolado de la idea original, su funcion es permitir a los alumnos trabajar de forma mas directa con el sistema pudiendo aprender de forma mas didactica.
 
-- **Características destacadas:** 
+
   - 
 ### 2. PID Digital Simplificado (Arduino)
 Esta es la versión simplificada, con ella buscamos poder mostrar el funcionamiento de una manera mas simple y económica, se busca una implementación demostrativa y simple de explicar.
